@@ -6,7 +6,7 @@
  */
 export function sortStrings(arr, param = 'asc') {
     let ReturnArray = arr.slice(0);
-    ReturnArray.sort( (a, b) => a.localeCompare(b, 'enu', {caseFirst: 'upper'}) );
+    ReturnArray.sort( (a, b) => a.localeCompare(b, ['enu', 'rus'], {caseFirst: 'upper'}) );
     
     //Инвертируем массив для desc параметра
     if (param !== 'asc'){
