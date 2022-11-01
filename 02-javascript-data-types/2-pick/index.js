@@ -5,15 +5,30 @@
  * @returns {object} - returns the new object
  */
 export const pick = (obj, ...fields) => {
-    const ReturnObj = {};//создаем объект\
-    //Преобразуем входной обхект в массив и применяем фильтр
+  const returnObj = {};
+  for (const [key, value] of Object.entries(obj)){ //деструкторизация объекта в цикле
+      if (fields.includes(key)){  //проверка наличия ключа в массиве полей
+        returnObj[key] = value;   //добавление полей в объект
+      }
+  }
+  return returnObj;
+    
+  /*
+  //Преобразуем входной обхект в массив и применяем фильтр
     const filtarray = Object.entries(obj).filter( item => {  
-        //проверяем, есть ли item массива в входном массиве fields через findIndex
-        return ( (fields.findIndex(finditem => finditem==item[0])>=0) ? true : false );
+        return ( (fields.findIndex(finditem => finditem==item[0])>=0) ? true : false ); //проверяем, есть ли item массива в входном массиве fields через findIndex
     } );  
+
+    //деструктизация + includes
+    //Можно перебрать через for ... of 
+
+    // ...array <- Спрет синтаксис
+    
+    const returnObj = {};//создаем объект
+    //const returnObj = Object.fromEntries(filtarray); //создаем объект и заполняем его свойствами из массива
     //Создаем поля в объекте из полей массива
-    for (let i in filtarray){
-      ReturnObj[filtarray[i][0]]=filtarray[i][1];
+    for (const i in filtarray){
+      returnObj[filtarray[i][0]]=filtarray[i][1];
     }
-    return ReturnObj;
+    return returnObj;*/
 };
