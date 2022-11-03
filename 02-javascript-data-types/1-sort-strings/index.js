@@ -5,5 +5,21 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
+    const returnArray = [...arr]; //копируем массив
 
+    const myCompare = (a, b) => {
+        return a.localeCompare(b, ['rus', 'enu'], {caseFirst: 'upper'}); //Сортировка с учетом локали
+    }
+    
+    returnArray.sort( (a,b) =>{
+        if(param == 'asc'){
+            return myCompare(a, b)
+        }
+        else if(param == 'desc'){
+            return myCompare(b, a); 
+        }
+    }
+    );
+
+    return returnArray;
 }
