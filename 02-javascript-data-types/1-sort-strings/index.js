@@ -12,10 +12,10 @@ export function sortStrings(arr, param = 'asc') {
     }
     
     returnArray.sort( (a,b) =>{
-        if(param == 'asc'){
+        if(param === 'asc'){
             return myCompare(a, b)
         }
-        else if(param == 'desc'){
+        else if(param === 'desc'){
             return myCompare(b, a); 
         }
     }
