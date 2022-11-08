@@ -54,7 +54,7 @@ export default class ColumnChart {
         } 
         
         this.title = this.element.firstElementChild;
-        this.title.innerHTML = params.label + this.getLinkTemplate(params.link);
+        this.title.innerHTML = "Total " + params.label + this.getLinkTemplate(params.link);
         this.container = this.title.nextElementSibling;
         this.header = this.container.firstElementChild;
         this.header.innerHTML = (params.value === undefined ? 0 : this.getFormatedValue(params.value, params.formatHeading));
