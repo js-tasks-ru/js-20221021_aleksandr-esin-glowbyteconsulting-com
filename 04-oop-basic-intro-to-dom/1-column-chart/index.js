@@ -1,8 +1,8 @@
 export default class ColumnChart {
     constructor(params) {
+        this.chartHeight = 50;
         this.render(params);
         this.initEventListeners();
-        this.chartHeight = 50;
     }  
 
     getTemplate() {
@@ -24,10 +24,7 @@ export default class ColumnChart {
     }
 
     getLinkTemplate(link){
-        if (link != undefined){
-            return '<a class="column-chart__link" href="' + link + '">View all</a>';
-        }
-        return "";
+        return link === undefined ? "" : '<a class="column-chart__link" href="' + link + '">View all</a>';
     }
 
     getFormatedValue(value, formatHeading = data => `${data}`){
@@ -38,7 +35,7 @@ export default class ColumnChart {
         if (data === undefined){ return "";}
         
         const maxValue = Math.max(...data);
-        const scale = 50 / maxValue;
+        const scale = this.chartHeight / maxValue;
         let chartHTML ='';
         for (const item of data){
             chartHTML = chartHTML + '<div style="--value: ' + String(Math.floor(item * scale)) + '" data-tooltip="' + (item / maxValue * 100).toFixed(0) + '%"></div>';
@@ -57,7 +54,7 @@ export default class ColumnChart {
         } 
         
         this.title = this.element.firstElementChild;
-        this.title.innerHTML = params.label + this.getLinkTemplate(params.link);
+        this.title.innerHTML = "Total " + params.label + this.getLinkTemplate(params.link);
         this.container = this.title.nextElementSibling;
         this.header = this.container.firstElementChild;
         this.header.innerHTML = (params.value === undefined ? 0 : this.getFormatedValue(params.value, params.formatHeading));
