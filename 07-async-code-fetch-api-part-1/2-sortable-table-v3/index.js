@@ -37,6 +37,10 @@ export default class SortableTable {
 
     if (bottom < document.documentElement.clientHeight && !this.loading && !this.isSortLocally) {
       this.loading = true;
+      
+      this.start = this.end;
+      this.end = this.start + this.step;
+      
       await this.loadDeata(id, order, this.start, this.end);
       this.loading = false;      
     }
@@ -58,11 +62,7 @@ export default class SortableTable {
     this.url = new URL(url , BACKEND_URL);    
     this.render();
     
-    //this.getServerData();
-    //this.sort(sorted.id, sorted.order);
   } 
-
-  
 
   get template() {
     return `
@@ -124,20 +124,33 @@ export default class SortableTable {
           }
         } else {return 0}
       });
+
+      for (const item of this.data) {
+        item.itemobj.remove();
+      }
+      for (const item of this.data) {
+        this.bodyBlock.append(item.itemobj);
+      }
     }
-
-
-    this.sort(id, order);
   }
 
   async sortOnServer (id, order) {
     const start = 1;
     const end = start + this.step;
+
+    let sortType = '';
+    const headerItem = this.checkSortableId(id);
+    if (headerItem){
+      sortType = headerItem.sortType; 
+      headerItem.itemobj.dataset.order = order; //Обновляем data-order в Header
+      this.elementArrow.remove();
+      headerItem.itemobj.append(this.elementArrow);
+    }
     
     for (const item of this.data) {
       item.itemobj.remove();
     }
-    await this.loadDeata(id, order, this.start, this.end);
+    await this.loadDeata(id, order, start, end);
    
   }
 
@@ -150,61 +163,6 @@ export default class SortableTable {
         return  false;
     });
   }
-  //обновить заголовок
-  //обновить данные
-
-
-
-  
-  sort(fieldValue, orderValue){
-    let sortType = '';
-    const headerItem = (() => {
-      return this.headerConfig.find((item) => { //Проверяем, доступность сортировки по полю
-        if (item.id === fieldValue && item.sortable === true){ //Возвращаем объект, если имя существует и признак ortable === true 
-          return true;
-        }
-          return  false;
-      });
-    })();
-
-    if (headerItem) {
-      
-
-      this.data.sort((fstItem, secItem) => {        
-        if (sortType === 'string'){ //Сортировка строк
-          const myCompare = (a, b) => {return a.localeCompare(b, ['rus', 'enu'], {caseFirst: 'upper'}); }//Сортировка с учетом локали
-          if(orderValue === 'asc'){
-            return myCompare(fstItem[fieldValue], secItem[fieldValue])
-          }
-          else if(orderValue === 'desc'){
-            return myCompare(secItem[fieldValue], fstItem[fieldValue]); 
-          }
-
-        } else if (sortType === 'number'){ //Сортировка чисел
-          if(orderValue === 'asc'){
-            return fstItem[fieldValue] - secItem[fieldValue];
-          }
-          else if(orderValue === 'desc'){
-            return secItem[fieldValue] - fstItem[fieldValue];
-          }
-        } else {return 0}
-      });
-    };
-    
-    for (const item of this.data) {
-      item.itemobj.remove();
-    }
-    for (const item of this.data) {
-      this.bodyBlock.append(item.itemobj);
-    }
-    
-    
-  }
-
-
-
-
-
 
   async loadDeata(id, order, start = this.start, end = this.end){
     this.element.classList.add('sortable-table_loading');
@@ -296,4 +254,3 @@ export default class SortableTable {
     // NOTE: удаляем обработчики событий, если они есть
   }
 }
-
