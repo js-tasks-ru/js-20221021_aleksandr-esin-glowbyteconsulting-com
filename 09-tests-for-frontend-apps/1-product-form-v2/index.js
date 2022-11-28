@@ -1,4 +1,4 @@
-//import SortableList from '../../2-sortable-list/src/index.js';
+import SortableList from '../2-sortable-list/index.js';
 import escapeHtml from './utils/escape-html.js';
 import fetchJson from './utils/fetch-json.js';
 
@@ -52,7 +52,8 @@ export default class ProductForm {
           referrer: ''
         });
 
-        this.addImageBlock(result.data.link, file.name);
+        this.subElements.imageListContainer.firstElementChild.append(this.getImageItem(result.data.link, file.name));
+        
         
         this.subElements.uploadImage.classList.remove('is-loading');
         this.subElements.uploadImage.disabled = false;
@@ -88,7 +89,7 @@ export default class ProductForm {
         <label class="form-label">Фото</label>
         <div data-element="imageListContainer">
         <ul class="sortable-list">
-          ${this.productData ? this.getImageList() : ''}
+          
         </ul>
       </div>
         <button type="button" data-element="uploadImage" name="uploadImage" class="button-primary-outline">
@@ -160,6 +161,7 @@ export default class ProductForm {
     if (!this.emptyPage && this.productId){
       this.updateTemolate()
     }
+    this.productData ? this.getImageList() : '';
     return this.element;
   }
 
@@ -222,23 +224,21 @@ export default class ProductForm {
   }
 
   getImageList(){
-    return this.productData.images.map((item) =>{
-      return `
-            <li class="products-edit__imagelist-item sortable-list__item" style="">
-              <span>
-                <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-                <img class="sortable-table__cell-img" alt="Image" src="${item.url}">
-                <span>${item.source}</span>
-              </span>
-              <button type="button">
-                <img src="icon-trash.svg" data-delete-handle="" alt="delete">
-              </button>
-            </li>
-      `
-    }).join('');
+    const { imageListContainer } = this.subElements;
+    const { images } = this.productData;
+
+    const items = images.map(({ url, source }) => this.getImageItem(url, source));
+
+    const sortableList = new SortableList({
+      items
+    });
+
+    imageListContainer.append(sortableList.element);
   }
 
-  addImageBlock(link, name){
+
+
+getImageItem(link, name){
     const wrapper = document.createElement('div');
     wrapper.innerHTML =  
               `<li class="products-edit__imagelist-item sortable-list__item" style="">
@@ -251,7 +251,7 @@ export default class ProductForm {
                   <img src="icon-trash.svg" data-delete-handle="" alt="delete">
                 </button>
               </li>`;
-    this.subElements.imageListContainer.firstElementChild.append(wrapper.firstElementChild);
+    return wrapper.firstElementChild;
   }
 
   getSubElements(element){
