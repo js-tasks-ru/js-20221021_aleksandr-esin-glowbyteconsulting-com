@@ -131,7 +131,7 @@ export default class ColumnChart {
         }, {});
       }
 
-    getServerRequest(dateFrom, dateTo){
+    async getServerRequest(dateFrom, dateTo){
         //создаем запрос на сервер
         let url = new URL(this.componentURL, this.serverURL);
         url.searchParams.set('from', dateFrom.toISOString());
@@ -139,25 +139,23 @@ export default class ColumnChart {
         return fetchJson(url);
     }
 
-    update(dateFrom , dateTo){
+    async update(dateFrom , dateTo){
         this.element.classList.add("column-chart_loading");
 
-        let serverResponce = this.getServerRequest(dateFrom, dateTo);
-        serverResponce.then(data => {
+        try{
+            let data = await this.getServerRequest(dateFrom, dateTo);
+    
             if (Object.values(data).length){
                 this.data = data;
                 this.updateChart(data);
                 this.updateHeader(data);
                 this.updateRange(dateFrom, dateTo);
             }
-        })
-        .then(() => {
-            this.element.classList.remove("column-chart_loading");
-        }).catch((error) => {
+        }catch(error){
             console.error('Update Error:', error);
-        }).finally(()=>{
-            serverResponce=null;
-        });
+        }
+        this.element.classList.remove("column-chart_loading");
+
         return this.data;
     }
     
