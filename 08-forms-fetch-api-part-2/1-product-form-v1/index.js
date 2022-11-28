@@ -125,7 +125,6 @@ export default class ProductForm {
 
   async save() {
     const product = this.getFormData();
-    console.log(product);
 
     try {
       const result = await fetchJson(`${BACKEND_URL}/api/rest/products`, {
@@ -222,7 +221,6 @@ export default class ProductForm {
   initEventListeners() {
     this.subElements.productForm.addEventListener('submit', this.onSubmit);
     this.subElements.uploadImage.addEventListener('click', this.uploadImage);
-    //console.log(this.subElements)
 
     this.subElements.imageListContainer.addEventListener('click', event => {
       if ('deleteHandle' in event.target.dataset) {
