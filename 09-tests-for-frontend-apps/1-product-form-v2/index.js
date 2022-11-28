@@ -1,4 +1,4 @@
-import SortableList from '../../2-sortable-list/solution';
+import SortableList from '../2-sortable-list/index.js';
 import escapeHtml from './utils/escape-html.js';
 import fetchJson from './utils/fetch-json.js';
 
@@ -238,7 +238,7 @@ export default class ProductForm {
 
 
 
-getImageItem(link, name){
+getImageItem(url, name){
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
       <li class="products-edit__imagelist-item sortable-list__item">
